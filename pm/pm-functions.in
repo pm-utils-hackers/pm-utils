@@ -294,13 +294,13 @@ done
 if [ -z "$SUSPEND_MODULE" ]; then
 	if grep -q mem /sys/power/state; then
 		SUSPEND_MODULE="kernel"
-		do_suspend() { echo -n "mem" >/sys/power/state; }
+		do_suspend() { printf "mem" >/sys/power/state; }
 	elif [ -c /dev/pmu ] && pm-pmu --check; then
 		SUSPEND_MODULE="kernel"
 		do_suspend() { pm-pmu --suspend; }
 	elif grep -q standby /sys/power/state; then
 		SUSPEND_MODULE="kernel"
-		do_suspend() { echo -n "standby" >/sys/power/state; }
+		do_suspend() { printf "standby" >/sys/power/state; }
 	fi
 fi
 
@@ -312,8 +312,8 @@ if [ -z "$HIBERNATE_MODULE" ] && \
 	{
 		[ -n "${HIBERNATE_MODE}" ] && \
 		grep -qw "${HIBERNATE_MODE}" /sys/power/disk && \
-		echo -n "${HIBERNATE_MODE}" > /sys/power/disk
-		echo -n "disk" > /sys/power/state
+		printf '%s' "${HIBERNATE_MODE}" > /sys/power/disk
+		printf "disk" > /sys/power/state
 	}
 fi
 
